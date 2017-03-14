@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="#{pbtext.feedsPublicTitleSearch}" /> 
+		<h:outputText value="#{pbtext.feedsPublicTitleFeeds}" />
+	</ui:define>
+
+	<ui:define name="body">
+		<div class="item">
+			<h:form>
+				<p:messages id="messages" showDetail="true" autoUpdate="true"
+					closable="true" globalOnly="true" />
+				<h2>
+					<h:outputText value="#{pbtext.feedsPublicTitleSearch}" />
+					<span class="arrow">
+						<h:outputText value="#{pbtext.feedsPublicTitleFeeds}" />
+					</span>
+				</h2>
+				<table style="width: 220px">
+					<tr>
+						<td><h:inputText value="#{eemlMB.environmentToFind}" /> </td>
+						<td><h:commandButton action="#{eemlMB.findAllEnvironmentByName()}" 
+							image="/images/zoom.png" /></td>
+					</tr>
+				</table>
+				<br />
+
+				<h:dataTable id="tableregdevice" value="#{eemlMB.allEnvironments}"
+					var="e" rendered="#{!eemlMB.emptyEnvironments}">
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{feedsPublicTableID}" />
+						</f:facet>
+						#{e.iddb}
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{feedsPublicTableTitle}" />
+						</f:facet>
+						#{e.title}
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{feedsPublicTableDescription}" />
+						</f:facet>
+						#{e.description}
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{feedsPublicTableVisualize}" />
+						</f:facet>
+						<h:commandButton action="#{eemlMB.viewFeedPublic(e)}"
+							image="/images/zoom.png" />
+					</h:column>
+				</h:dataTable>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>

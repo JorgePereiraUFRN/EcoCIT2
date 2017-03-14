@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="#{pbtext.documentationTitle}" />
+	</ui:define>
+
+	<ui:define name="body">
+		<div class="item">
+
+			<h2><h:outputText value="#{pbtext.documentationTitle}" /></h2>
+			<p><h:outputText value="#{pbtext.documentationAboutEcoDiF}" /></p>
+				
+			<div style="text-align: center">
+				<img src="#{request.contextPath}/images/#{pbtext.documentationArchitectureImage}" 
+					width="650px" />
+				<br /><br />
+			</div>
+			
+			<p>
+				<h:outputText value="#{pbtext.documentationDevicesConnectionModule}" escape="false" />
+			</p>
+			<p>
+				<h:outputText value="#{pbtext.documentationDriversDataManipulationModule}" escape="false" />
+			</p>
+			<p>
+				<h:outputText value="#{pbtext.documentationVisualizationManagementModule}" escape="false" />
+			</p>
+			<p>
+				<h:outputText value="#{pbtext.documentationCollaborationModule}" escape="false" />
+			</p>
+			<p>
+				<h:outputText value="#{pbtext.documentationStorageModule}" escape="false" />
+			</p>
+			<p>
+				<h:outputText value="#{pbtext.documentationApplicationsModule}" escape="false" />
+			</p>
+			<p>
+				<h:outputText value="#{pbtext.documentationUserProfiles}" escape="false" />
+			</p>
+		</div>
+	</ui:define>
+</ui:composition>

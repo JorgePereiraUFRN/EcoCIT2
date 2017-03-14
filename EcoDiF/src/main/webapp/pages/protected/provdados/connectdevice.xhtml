@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="#{pdtext.connectDeviceTitlePage}" />
+	</ui:define>
+
+	<ui:define name="body">
+		<div class="item">
+			<h:form>
+				<p:messages id="messages" showDetail="true" autoUpdate="true"
+					closable="true" globalOnly="true" />
+				<h2>
+					<h:outputText value="#{pdtext.connectDeviceTitleConnect}" />
+					<span class="arrow">
+						<h:outputText value="#{pdtext.connectDeviceTitleDevice}" />
+					</span>
+				</h2>
+
+				<table style="width: 500px">
+					<tr>
+						<td>
+							<h:outputText value="#{pdtext.connectDeviceObject}" />
+						</td>
+						<td><h:selectOneMenu
+								value="#{deviceMB.deviceConnectSelected}" styleClass="forms">
+								<f:selectItems value="#{deviceMB.allDevices}" var="de"
+									itemLabel="#{de.name} (#{de.version})" itemValue="#{de}" />
+								<f:converter binding="#{deviceConverter}" />
+							</h:selectOneMenu></td>
+						<td><h:commandButton id="downloadLink"
+								value="#{pdtext.connectDeviceDownloadButton}" 
+								ajax="false"
+								onclick="PrimeFaces.monitorDownload(start, stop)">
+								<p:fileDownload value="#{deviceMB.fileToProvedor}" />
+							</h:commandButton></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{pdtext.connectDeviceName}" />
+						</td>
+						<td><h:inputText value="#{deviceMB.connectedDevice.name}"
+								styleClass="forms" id="txtName" required="true" /></td>
+						<td><p:message id="iconMessage" for="txtName"
+								display="icon" /></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{pdtext.connectDeviceDescription}" />
+						</td>
+						<td><h:inputText
+								value="#{deviceMB.connectedDevice.description}"
+								styleClass="forms" id="txtDesc" /></td>
+						<td></td>
+					</tr>
+				</table>
+				<h:commandButton action="#{deviceMB.connectDevice()}"
+					value="#{pdtext.connectDeviceConnectButton}" />
+			</h:form>
+		</div>
+	</ui:define>
+	<script type="text/javascript">  
+	function start() {  
+	    statusDialog.show();  
+	}  
+	  
+	function stop() {  
+	    statusDialog.hide();  
+	}  
+	</script>
+</ui:composition>
+

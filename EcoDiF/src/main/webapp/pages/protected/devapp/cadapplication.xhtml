@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="#{dapptext.registerApplicationTitlePage}" />
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form enctype="multipart/form-data">
+			<p:messages id="messages" showDetail="true" autoUpdate="true"
+				closable="true" globalOnly="true" />
+			<div class="item">
+				<h2>
+					<h:outputText value="#{dapptext.registerApplicationTitleRegister}" />
+					<span class="arrow">
+						<h:outputText value="#{dapptext.registerApplicationTitleApplication}" />
+					</span>
+				</h2>
+
+				<table style="width: 700px">
+					<tr>
+						<td>
+							<h:outputText value="#{dapptext.registerApplicationFormName}" />
+						</td>
+						<td><h:inputText id="appName"
+								value="#{applicationMB.application.name}" styleClass="forms"
+								required="true" /></td>
+						<td><p:message id="iconMessage" for="appName" display="icon" /></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{dapptext.registerApplicationFormDescription}" />
+						</td>
+						<td><h:inputText id="appDescription"
+								value="#{applicationMB.application.description}"
+								styleClass="forms" /></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{dapptext.registerApplicationFormKeywords}" />
+						</td>
+						<td><h:inputText id="appTags"
+								value="#{applicationMB.application.tags}" styleClass="forms" /></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{dapptext.registerApplicationFormVisibility}" />
+						</td>
+						<td><h:selectBooleanCheckbox id="appPrivate"
+								value="#{applicationMB.application._private}" styleClass="forms" /></td>
+						<td></td>
+					</tr>
+
+				</table>
+
+				<h:panelGrid columns="2" style="width:700px"
+					rendered="#{applicationMB.applicationRegistered}">
+					<h:outputText value="#{dapptext.registerApplicationFormEMMLFile}" />
+					<p:fileUpload value="#{applicationMB.applicationFile}"
+						mode="simple" allowTypes="*.emml" />
+				</h:panelGrid>
+
+				<h:commandButton action="#{applicationMB.saveApplication()}"
+					value="#{dapptext.registerApplicationRegisterButton}" />
+				<h:commandButton action="#{applicationMB.includeFeeds()}"
+					value="#{dapptext.registerApplicationBindButton}"
+					rendered="#{applicationMB.applicationRegistered}" />
+				<h:commandButton action="#{applicationMB.deleteFeeds()}"
+					value="#{dapptext.registerApplicationUnbindButton}"
+					rendered="#{applicationMB.applicationRegistered}" />
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

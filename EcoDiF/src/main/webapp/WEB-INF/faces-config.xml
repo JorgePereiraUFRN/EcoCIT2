@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+	
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>home</from-outcome>
+			<to-view-id>/pages/public/index.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>errorLogin</from-outcome>
+			<to-view-id>/pages/public/index.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>search</from-outcome>
+			<to-view-id>/pages/public/search.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>caddevice</from-outcome>
+			<to-view-id>/pages/protected/fabdisp/regdevice.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>connectdevice</from-outcome>
+			<to-view-id>/pages/protected/provdados/connectdevice.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>listdevicepublic</from-outcome>
+			<to-view-id>/pages/public/listdevicepublic.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadfeed</from-outcome>
+			<to-view-id>/pages/protected/provdados/regfeed.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>listfeed</from-outcome>
+			<to-view-id>/pages/protected/provdados/listfeed.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>listconectdevice</from-outcome>
+			<to-view-id>/pages/protected/provdados/listconnectdev.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>reguser</from-outcome>
+			<to-view-id>/pages/public/reguser.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>docs</from-outcome>
+			<to-view-id>/pages/public/documentation.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editDevice</from-outcome>
+			<to-view-id>/pages/protected/fabdisp/regdevice.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>listdevice</from-outcome>
+			<to-view-id>/pages/protected/fabdisp/listdevice.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>feedvisualization</from-outcome>
+			<to-view-id>/pages/public/feedvisualization.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>feedvisualizationprovdados</from-outcome>
+			<to-view-id>/pages/protected/provdados/feedvisualization.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>feedvisualizationdevapp</from-outcome>
+			<to-view-id>/pages/protected/devapp/feedvisualization.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadapplication</from-outcome>
+			<to-view-id>/pages/protected/devapp/cadapplication.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>listapplications</from-outcome>
+			<to-view-id>/pages/public/listapplications.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>listapplicationsuser</from-outcome>
+			<to-view-id>/pages/protected/devapp/listapplicationsuser.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>viewapplication</from-outcome>
+			<to-view-id>/pages/public/viewapplication.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>viewapplicationdevapp</from-outcome>
+			<to-view-id>/pages/protected/devapp/viewapplication.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>resultexecution</from-outcome>
+			<to-view-id>/pages/public/resultexecution.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>resultexecutiondevapp</from-outcome>
+			<to-view-id>/pages/protected/devapp/resultexecution.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>includefeeds</from-outcome>
+			<to-view-id>/pages/protected/devapp/includefeeds.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>deletefeeds</from-outcome>
+			<to-view-id>/pages/protected/devapp/deletefeeds.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>regusergroup</from-outcome>
+			<to-view-id>/pages/protected/provdados/regusergroup.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
+	
+	<managed-bean>
+		<managed-bean-name>userTypeConverter</managed-bean-name>
+		<managed-bean-class>br.com.ecodif.converter.UserTypeConverter</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>userGroupConverter</managed-bean-name>
+		<managed-bean-class>br.com.ecodif.converter.UserGroupConverter</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>platformConverter</managed-bean-name>
+		<managed-bean-class>br.com.ecodif.converter.PlatformConverter</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>sensorConverter</managed-bean-name>
+		<managed-bean-class>br.com.ecodif.converter.SensorConverter</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>deviceConverter</managed-bean-name>
+		<managed-bean-class>br.com.ecodif.converter.DeviceConverter</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>connectedDeviceConverter</managed-bean-name>
+		<managed-bean-class>br.com.ecodif.converter.ConnectedDeviceConverter</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>environmentConverter</managed-bean-name>
+		<managed-bean-class>br.com.ecodif.converter.EnvironmentConverter</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>unitConverter</managed-bean-name>
+		<managed-bean-class>br.com.ecodif.converter.UnitConverter</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	
+	<application>
+    	<resource-bundle>
+    		<base-name>br.com.ecodif.language.public</base-name>
+    		<var>pbtext</var>
+    	</resource-bundle>
+    	<resource-bundle>
+    		<base-name>br.com.ecodif.language.protected-devapp</base-name>
+    		<var>dapptext</var>
+    	</resource-bundle>
+    	<resource-bundle>
+    		<base-name>br.com.ecodif.language.protected-fabdisp</base-name>
+    		<var>fdisptext</var>
+    	</resource-bundle>
+    	<resource-bundle>
+    		<base-name>br.com.ecodif.language.protected-provdados</base-name>
+    		<var>pdtext</var>
+    	</resource-bundle>
+    	<locale-config>
+			<default-locale>pt_BR</default-locale>
+    		<supported-locale>en_US</supported-locale>
+    	</locale-config>
+    </application>
+	
+</faces-config>

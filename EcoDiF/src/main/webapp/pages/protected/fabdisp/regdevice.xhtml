@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="#{fdisptext.registerDeviceTitlePage}" />
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form enctype="multipart/form-data">
+			<p:messages id="messages" showDetail="true" autoUpdate="true"
+				closable="true" globalOnly="true" />
+			<div class="item">
+				<h2>
+					<h:outputText value="#{fdisptext.registerDeviceTitleRegister}" />
+					<span class="arrow">
+						<h:outputText value="#{fdisptext.registerDeviceTitleDevice}" />
+					</span>
+				</h2>
+
+				<table style="width: 700px">
+					<tr>
+						<td>
+							<h:outputText value="#{fdisptext.registerDeviceFormName}" />
+						</td>
+						<td><h:inputText id="txtNameDevice" required="true"
+								value="#{deviceMB.device.name}" styleClass="forms" /></td>
+						<td><p:message id="iconMessage" for="txtNameDevice"
+								display="icon" /></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{fdisptext.registerDeviceFormDescription}" />
+						</td>
+						<td><h:inputText id="txtDescription"
+								value="#{deviceMB.device.description}" styleClass="forms" /></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{fdisptext.registerDeviceFormVersion}" />
+						</td>
+						<td><h:inputText id="txtVersion"
+								value="#{deviceMB.device.version}" styleClass="forms" /></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{fdisptext.registerDeviceFormTechnicalSpecifications}" />
+						</td>
+						<td><h:inputText id="txTechSpec"
+								value="#{deviceMB.device.technicalSpecifications}"
+								styleClass="forms" /></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{fdisptext.registerDeviceFormSystem}" />
+						</td>
+						<td><h:selectOneMenu value="#{deviceMB.platformSelected}"
+								styleClass="forms">
+								<f:selectItems value="#{deviceMB.platformList}" var="pl"
+									itemLabel="#{pl.description} (#{pl.version})" itemValue="#{pl}" />
+								<f:converter binding="#{platformConverter}" />
+							</h:selectOneMenu></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td rowspan="2">
+							<h:outputText value="#{fdisptext.registerDeviceFormSensors}" />
+						</td>
+						<td><h:selectOneMenu id="selectSensores"
+								value="#{deviceMB.sensorSelected}" styleClass="forms">
+								<f:selectItems value="#{deviceMB.sensorList}" var="se"
+									itemLabel="#{se.description}" itemValue="#{se}" />
+								<f:converter binding="#{sensorConverter}" />
+							</h:selectOneMenu></td>
+						<td><h:commandButton action="#{deviceMB.addSensorDevice()}"
+								image="/images/add.png" /></td>
+					</tr>
+					<tr>
+						<td colspan="1"><h:dataTable id="tableSensorsSelected"
+								value="#{deviceMB.device.sensors}" var="se"
+								rendered="#{!deviceMB.sensorsSelectedEmpty}">
+								<h:column>
+										#{se.description}
+								</h:column>
+								<h:column>
+
+									<h:commandButton action="#{deviceMB.removeSensorDevice(se)}"
+										image="/images/delete.png" />
+								</h:column>
+							</h:dataTable></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{fdisptext.registerDeviceFormDriver}" />
+						</td>
+						<td><h:panelGrid columns="2"
+								rendered="#{deviceMB.deviceRegistered}">
+								<h:outputText value="#{fdisptext.registerDeviceFormDriverName}" />
+								<h:inputText value="#{deviceMB.driver.name}" />
+								<h:outputText value="#{fdisptext.registerDeviceFormDriverDescription}" />
+								<h:inputText value="#{deviceMB.driver.description}" />
+								<h:outputText value="#{fdisptext.registerDeviceFormDriverVersion}" />
+								<h:inputText value="#{deviceMB.driver.version}" />
+								<h:outputText value="#{fdisptext.registerDeviceFormDriverFile}" />
+								<p:fileUpload value="#{deviceMB.driverFile}" mode="simple"
+									rendered="#{!deviceMB.driverFileUploaded}" />
+								<h:commandButton id="downloadLink" value="Download" ajax="false"
+									onclick="PrimeFaces.monitorDownload(start, stop)"
+									rendered="#{deviceMB.driverFileUploaded}">
+									<p:fileDownload value="#{deviceMB.file}" />
+								</h:commandButton>
+							</h:panelGrid> 
+							<h:commandButton action="#{deviceMB.saveDriver()}"
+								value="#{fdisptext.registerDeviceSaveDriverButton}" 
+								rendered="#{deviceMB.deviceRegistered}" /> 
+							<h:outputText
+								value="#{fdisptext.registerDeviceFormDriverRegistration}"
+								rendered="#{!deviceMB.deviceRegistered}" /> 
+							<h:commandButton
+								action="#{deviceMB.removeDriver()}" 
+								value="#{fdisptext.registerDeviceRemoveDriveButton}"
+								rendered="#{deviceMB.driverFileUploaded}" />
+						</td>
+						<td></td>
+					</tr>
+				</table>
+				<h:commandButton action="#{deviceMB.saveDevice()}" 
+					value="#{fdisptext.registerDeviceSaveButton}" />
+				<h:commandButton action="#{deviceMB.newDevice()}" 
+					value="#{fdisptext.registerDeviceNewButton}" />
+			</div>
+		</h:form>
+	</ui:define>
+	<script type="text/javascript">  
+	function start() {  
+	    statusDialog.show();  
+	}  
+	  
+	function stop() {  
+	    statusDialog.hide();  
+	}  
+     </script>
+</ui:composition>

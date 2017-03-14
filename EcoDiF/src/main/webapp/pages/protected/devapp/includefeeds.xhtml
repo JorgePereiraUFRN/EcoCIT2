@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="#{dapptext.includeFeedsTitlePage}" />
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form enctype="multipart/form-data">
+			<p:messages id="messages" showDetail="true" autoUpdate="true" 
+				closable="true" globalOnly="true" />
+			<div class="item">
+				<h:form>
+					<h2>
+						<h:outputText value="#{dapptext.includeFeedsTitleEdit}" />
+						<span class="arrow">
+							<h:outputText value="#{dapptext.includeFeedsTitleApplication}" />
+						</span>
+					</h2>
+					
+					<h:outputText value="#{dapptext.includeFeedsText}" />
+					<strong><h:outputText value="#{applicationMB.application.name}" /></strong>:
+					<br/><br/>
+					
+					<table style="width: 220px">
+						<tr>
+							<td><input /></td>
+							<td><h:commandButton action="home" image="/images/zoom.png" /></td>
+						</tr>
+					</table>
+					<br />
+					<h:dataTable id="tablelistfeeds" value="#{eemlMB.allEnvironments}" 
+						var="e" style="width: 700px" rendered="#{!eemlMB.emptyEnvironments}">
+						<h:column>
+							<f:facet name="header"></f:facet>
+							<h:selectBooleanCheckbox 
+								value="#{applicationMB.inclusionFeeds[e.iddb]}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{dapptext.includeFeedsDetailsID}" />
+							</f:facet>
+							#{e.iddb}
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{dapptext.includeFeedsDetailsTitle}" />
+							</f:facet>
+							#{e.title}
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{dapptext.includeFeedsDetailsDescription}" />
+							</f:facet>
+							#{e.description}
+						</h:column>
+					</h:dataTable>
+					<h:outputText 
+						value="#{dapptext.includeFeedsNoFeedsFound}" 
+						rendered="#{eemlMB.emptyEnvironments}" />
+					<br/><br/>
+					<h:commandButton value="#{dapptext.includeFeedsButton}" 
+						action="#{applicationMB.bindFeeds()}" />
+				</h:form>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

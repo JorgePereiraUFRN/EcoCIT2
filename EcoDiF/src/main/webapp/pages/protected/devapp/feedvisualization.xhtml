@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:m="http://code.google.com/p/gmaps4jsf/"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="#{dapptext.viewFeedTitlePage}" />
+	</ui:define>
+
+	<ui:define name="body">
+
+		<div class="item">
+			<h:form>
+				<p:growl id="messagesform" showDetail="true" sticky="true" />
+				<h2>
+					Feed <span class="arrow"> 
+					<h:outputText value="#{eemlMB.environment.title}" /></span>
+				</h2>
+
+				<table style="width: 740px">
+					<tr>
+						<td>
+							<h:outputText value="#{dapptext.viewFeedDetailsAddress}" />
+						</td>
+						<td><h:outputText value="#{eemlMB.environment.website}" /></td>
+						<td />
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{dapptext.viewFeedDetailsDevice}" />
+						</td>
+						<td>
+							<h:outputText value="#{eemlMB.deviceOfEnvironment.name} 
+							(#{eemlMB.deviceOfEnvironment.description})" />
+						</td>
+						<td />
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{dapptext.viewFeedDetailsDatastream}" />
+						</td>
+						<td>
+							<h:outputText value="#{eemlMB.sensorOfDatastream.name} 
+							(#{eemlMB.sensorOfDatastream.description})" />
+						</td>
+						<td />
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{dapptext.viewFeedDetailsCurrentValue}" />
+						</td>
+						<td><h:outputText value="#{chartBean.atualValue}" /></td>
+						<td />
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{dapptext.viewFeedDetailsAverageValue}" />
+						</td>
+						<td><h:outputText value="#{chartBean.averageValue}" /></td>
+						<td>
+							<p:commandButton value="Check status" 
+								actionListener="#{chartBean.checkTrigger()}"
+								update="messagesform" rendered="#{!chartBean.listEmpty}" />
+						</td>
+					</tr>
+				</table>
+
+				<p:lineChart id="chart" value="#{chartBean.categoryModel}" minY="0"
+					maxY="50" style="height:300px;margin-top:20px" showDatatip="true" 
+					rendered="#{!chartBean.listEmpty}" />
+
+				<br />
+				<h3>
+					<h:outputText value="#{dapptext.viewFeedDetailsDeviceLocation}" />
+					<h:outputText value="#{eemlMB.environment.location.name}" />
+				</h3>
+				<p:gmap center="#{eemlMB.environment.location.lat}, #{eemlMB.environment.location.lon}"
+					zoom="15" type="ROADMAP" style="width:600px;height:400px" 
+					model="#{mapBean.simpleModel}" />
+			</h:form>
+		</div>
+	</ui:define>
+	<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key= AIzaSyAKZ7ZrftsGaURFYlODsbgG2Z1PW-8FneE"
+		type="text/javascript"> </script>
+</ui:composition>
+

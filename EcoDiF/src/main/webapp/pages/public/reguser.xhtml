@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="#{pbtext.registerUserTitlePage}" />	
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form>
+			<p:messages id="messages" showDetail="true" autoUpdate="true"
+				closable="true" globalOnly="true" />
+
+			<div class="item">
+				<h2>
+					<h:outputText value="#{pbtext.registerUserTitleRegister}" /> 
+					<span class="arrow"><h:outputText value="#{pbtext.registerUserTitleUser}" /></span>
+				</h2>
+
+
+				<table style="width: 440px">
+					<tr>
+						<td><h:outputText value="#{pbtext.registerUserFormUserType}" /></td>
+						<td><h:selectOneMenu value="#{userMB.userTypeSelected}"
+								styleClass="forms">
+								<f:selectItems value="#{userMB.userTypes}" var="ut"
+									itemLabel="#{ut.description}" itemValue="#{ut}" />
+								<f:converter binding="#{userTypeConverter}" />
+							</h:selectOneMenu></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><h:outputText value="#{pbtext.registerUserFormName}" /></td>
+						<td><h:inputText value="#{userMB.user.name}"
+								styleClass="forms" id="txtNameUser" required="true" /></td>
+						<td><p:message id="vtxtNameUser" for="txtNameUser"
+								display="icon" /></td>
+					</tr>
+					<tr>
+						<td><h:outputText value="#{pbtext.registerUserFormEmail}" /></td>
+						<td><h:inputText value="#{userMB.user.email}" id="txtEmail"
+								required="true" styleClass="forms" /></td>
+						<td><p:message id="vtxtEmail" for="txtEmail" display="icon" /></td>
+					</tr>
+					<tr>
+						<td><h:outputText value="#{pbtext.registerUserFormLogin}" /></td>
+						<td><h:inputText id="loginUser" value="#{userMB.user.login}"
+								styleClass="forms" required="true" /></td>
+						<td><p:message id="vloginUser" for="loginUser" display="icon" /></td>
+					</tr>
+					<tr>
+						<td><h:outputText value="#{pbtext.registerUserFormPassword}" /></td>
+						<td><h:inputSecret id="txtSenha"
+								value="#{userMB.user.password}" styleClass="forms"
+								required="true" /></td>
+						<td><p:message id="vtxtSenha" for="txtSenha" display="icon" /></td>
+					</tr>
+					<tr>
+						<td><h:outputText value="#{pbtext.registerUserFormCompany}" /></td>
+						<td><h:inputText id="txtEmpresaCad" value="#{userMB.user.companyName}"
+								styleClass="forms" title="#{pbtext.registerUserFormCompanyTip}" /></td>
+						<td>
+						<p:tooltip for="txtEmpresaCad" showEvent="focus" hideEvent="blur" />
+						</td>
+					</tr>
+				</table>
+				<h:commandButton action="#{userMB.saveUser()}" 
+					value="#{pbtext.registerUserButtonRegister}"/>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="#{dapptext.viewApplicationTitlePage}" />
+	</ui:define>
+
+	<ui:define name="body">
+		<p:messages id="messages" showDetail="true" autoUpdate="true"
+			closable="true" globalOnly="true" />
+		<p:dialog modal="true" widgetVar="statusDialog" header="Status"
+			draggable="false" closable="false" resizable="false" />
+
+		<p:dialog id="modalDialog"
+			header="#{dapptext.viewApplicationDialogTitle} #{applicationMB.application.name}"
+			widgetVar="dialog" modal="true" height="300">
+			<pre>
+				<h:outputText value="#{applicationMB.contentsEmmlFile}" />
+			</pre>
+		</p:dialog>
+
+		<h:form>
+			<div class="item">
+				<h2>
+					<h:outputText value="#{dapptext.viewApplicationTitle}" />
+				</h2>
+
+				<table style="width: 500px">
+					<tr>
+						<td>
+							<strong>
+								<h:outputText value="#{dapptext.viewApplicationDetailsName}" />
+							</strong>
+						</td>
+						<td><h:outputText value="#{applicationMB.application.name}" /></td>
+					</tr>
+					<tr>
+						<td>
+							<strong>
+								<h:outputText value="#{dapptext.viewApplicationDetailsDescription}" />
+							</strong>
+						</td>
+						<td><h:outputText 
+								value="#{applicationMB.application.description}" /></td>
+					</tr>
+					<tr>
+						<td>
+							<strong>
+								<h:outputText value="#{dapptext.viewApplicationDetailsUser}" />
+							</strong>
+						</td>
+						<td><h:outputText
+								value="#{applicationMB.application.user.name}" /> (<h:outputText
+								value="#{applicationMB.application.user.login}" />)</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>
+								<h:outputText value="#{dapptext.viewApplicationDetailsKeywords}" />
+							</strong>
+						</td>
+						<td><h:outputText value="#{applicationMB.application.tags}" /></td>
+					</tr>
+					<tr>
+						<td>
+							<strong>
+								<h:outputText value="#{dapptext.viewApplicationDetailsVisibility}" />
+							</strong>
+						</td>
+						<td>
+							<h:outputText value="#{dapptext.viewApplicationDetailsVisibilityYes}"
+								rendered="#{applicationMB.application._private}" /> 
+							<h:outputText
+								value="#{dapptext.viewApplicationDetailsVisibilityNo}" 
+								rendered="#{!applicationMB.application._private}" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>
+								<h:outputText value="#{dapptext.viewApplicationDetailsCreation}" />
+							</strong>
+						</td>
+						<td><h:outputText
+								value="#{applicationMB.application.creationDate.time}">
+								<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy HH:mm:ss"
+									timeZone="GMT-03:00" />
+							</h:outputText></td>
+					</tr>
+					<tr>
+						<td>
+							<strong>
+								<h:outputText value="#{dapptext.viewApplicationDetailsUpdate}" />
+							</strong>
+						</td>
+						<td><h:outputText
+								value="#{applicationMB.application.updateDate.time}">
+								<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy HH:mm:ss"
+									timeZone="GMT-03:00" />
+							</h:outputText></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<p:commandButton id="modalDialogButton" 
+	                			value="#{dapptext.viewApplicationViewCodeButton}" 
+	                			onclick="dialog.show();" type="button"/>	
+						</td>
+					</tr>
+				</table>
+				<br /> 
+				<strong>
+		        	<u><h:outputText value="#{dapptext.viewApplicationFeeds}" /></u>
+		        </strong>
+		        <br/><br/>
+				<h:dataTable id="tablelistfeeds" value="#{applicationMB.feeds}" var="e" 
+		        	style="width:500px" rendered="#{!applicationMB.feedsListEmpty}">
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{dapptext.viewApplicationFeedsID}" />
+						</f:facet>
+						#{e.iddb}
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{dapptext.viewApplicationFeedsTitle}" />
+						</f:facet>
+						#{e.title}
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{dapptext.viewApplicationFeedsDescription}" />
+						</f:facet>
+						#{e.description}
+					</h:column>
+					<h:column>
+						<f:facet name="header"></f:facet>
+						<h:commandButton action="#{eemlMB.viewFeedPublic(e)}" 
+							image="/images/zoom.png" />
+					</h:column>
+				</h:dataTable>
+								
+				<br/>
+		        <a href="javascript:history.back()">
+		        	<img src="../../../images/prev.gif" width="22px" 
+		        		title="#{dapptext.viewApplicationBackButton}" />
+				</a>
+			</div>
+		</h:form>
+	</ui:define>
+
+	<script type="text/javascript">  
+		function start() {  
+		    statusDialog.show();  
+		}  
+		  
+		function stop() {  
+		    statusDialog.hide();  
+		}
+	</script>
+
+</ui:composition>

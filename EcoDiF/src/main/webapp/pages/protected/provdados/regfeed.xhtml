@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="#{pdtext.registerFeedTitlePage}" />
+	</ui:define>
+
+	<ui:define name="body">
+		<div class="item">
+			<h:form>
+				<p:messages id="messages" showDetail="true" autoUpdate="true"
+					closable="true" globalOnly="true" />
+				<h2>
+					Feed 
+					<span class="arrow">
+						<h:outputText value="#{pdtext.registerFeedTitle}" />
+					</span>
+				</h2>
+
+				<table style="width: 700px">
+					<tr>
+						<td>
+							<h:outputText value="#{pdtext.registerFeedTableConnectedDevice}" />
+						</td>
+						<td><h:selectOneMenu value="#{eemlMB.connectedDevice}"
+								disabled="#{!eemlMB.editingForm}" onchange="submit()"
+								styleClass="forms" valueChangeListener="#{eemlMB.deviceChanged}">
+								<f:selectItems value="#{eemlMB.connectedDevicesByUser}" var="de"
+									itemLabel="#{de.device.name} (#{de.name})" itemValue="#{de}" />
+								<f:converter binding="#{connectedDeviceConverter}" />
+							</h:selectOneMenu></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{pdtext.registerFeedTableName}" />
+						</td>
+						<td><h:inputText value="#{eemlMB.environment.title}"
+								styleClass="forms" id="txtTitle" required="true"/></td>
+						<td><p:message id="iconMessage" for="txtTitle"
+								display="icon" /></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{pdtext.registerFeedTableDescription}" />
+						</td>
+						<td><h:inputText value="#{eemlMB.environment.description}"
+								styleClass="forms" id="txtDescription" /></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{pdtext.registerFeedTableDatastream}" />
+						</td>
+						<td><h:selectOneMenu id="selectSensores"
+								disabled="#{!eemlMB.editingForm}"
+								value="#{eemlMB.sensorSelected}" styleClass="forms">
+								<f:selectItems value="#{eemlMB.sensorsByDevice}" var="se"
+									itemLabel="#{se.description}" itemValue="#{se}" />
+								<f:converter binding="#{sensorConverter}" />
+							</h:selectOneMenu></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{pdtext.registerFeedTableUnit}" />
+						</td>
+						<td><h:selectOneMenu id="selectUnits"
+								value="#{eemlMB.unitSelected}" styleClass="forms">
+								<f:selectItems value="#{eemlMB.allUnits}" var="un"
+									itemLabel="#{un.symbol} (#{un.type})" itemValue="#{un}" />
+								<f:converter binding="#{unitConverter}" />
+							</h:selectOneMenu></td>
+						<td><p:commandButton type="button" icon="ui-icon-plus" onclick="dlgRegUnit.show()" /></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{pdtext.registerFeedTableStatus}" />
+						</td>
+						<td><h:selectOneMenu value="#{eemlMB.environment.status}" styleClass="forms">
+									<f:selectItem itemLabel="#{pdtext.registerFeedTableStatusActive}" 
+										itemValue="#{pdtext.registerFeedTableStatusActive}" />
+									<f:selectItem itemLabel="#{pdtext.registerFeedTableStatusInactive}" 
+										itemValue="#{pdtext.registerFeedTableStatusInactive}"/>
+								</h:selectOneMenu></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<h:outputText value="#{pdtext.registerFeedTableVisibility}" />
+						</td>
+						<td><h:selectOneMenu
+								id="selectUserGroups" value="#{eemlMB.userGroup}" styleClass="forms">
+								<f:selectItem itemLabel=""/>
+								<f:selectItems value="#{userGroupMB.userGroupsByUser}" var="ug"
+									itemLabel="#{ug.name}" itemValue="#{ug}" />
+								<f:converter binding="#{userGroupConverter}" />
+							</h:selectOneMenu></td>
+						<td></td>
+					</tr>
+				</table>
+				<br/>
+
+				<h3><h:outputText value="#{pdtext.registerFeedLocation}" /></h3>
+				<table style="width: 400px">
+					<tr>
+						<td><h:outputText value="#{pdtext.registerFeedLocationDescription}" /></td>
+						<td><h:inputText value="#{eemlMB.environment.location.name}" /></td>
+					</tr>
+					<tr>
+						<td><h:outputText value="#{pdtext.registerFeedLocationLatitude}" /></td>
+						<td><h:inputText value="#{eemlMB.environment.location.lat}" /></td>
+					</tr>
+					<tr>
+						<td><h:outputText value="#{pdtext.registerFeedLocationLongitude}" /></td>
+						<td><h:inputText value="#{eemlMB.environment.location.lon}" /></td>
+					</tr>
+				</table>
+				<br />
+				<h:commandButton action="#{eemlMB.saveEeml()}" 
+					value="#{pdtext.registerFeedSaveFeedButton}" />
+				<h:commandButton action="#{eemlMB.viewFeedFromregfeed()}" 
+					value="#{pdtext.registerFeedViewFeedButton}" 
+					rendered="#{!eemlMB.environmentNull}" />
+			</h:form>
+			
+			<p:dialog widgetVar="dlgRegUnit" height="210" width="440"
+				modal="true" header="#{pdtext.registerFeedUnitDialogTitle}">
+				<h:form>
+					<table style="width: 400px">
+						<tr>
+							<td><h:outputText value="#{pdtext.registerFeedUnitDialogSymbol}" /></td>
+							<td><h:inputText value="#{eemlMB.unit.symbol}" 
+									title="#{pdtext.registerFeedUnitDialogSymbolTip}"
+									style="width:200px" /></td>
+						</tr>
+						<tr>
+							<td><h:outputText value="#{pdtext.registerFeedUnitDialogType}" /></td>
+							<td><h:inputText value="#{eemlMB.unit.type}" 
+									title="#{pdtext.registerFeedUnitDialogTypeTip}"
+									style="width:200px" /></td>
+						</tr>
+						<tr>
+							<td><h:outputText value="#{pdtext.registerFeedUnitDialogValue}" /></td>
+							<td><h:inputText value="#{eemlMB.unit.value}" 
+									title="#{pdtext.registerFeedUnitDialogValueTip}" 
+									style="width:200px" /></td>
+						</tr>
+					</table>
+					<h:commandButton value="OK" action="#{eemlMB.saveUnit()}" />
+				</h:form>
+			</p:dialog>
+			
+		</div>
+	</ui:define>
+</ui:composition>

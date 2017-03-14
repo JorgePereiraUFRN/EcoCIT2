@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="title">Home</ui:define>
+
+	<ui:define name="body">
+		<h:form>
+			<p:messages id="messages" showDetail="true" autoUpdate="true"
+				closable="true" globalOnly="true" />
+			<div class="item">
+
+				<h2>
+					<h:outputText value="#{pbtext.mainPageTitle}" />
+					<span class="arrow">EcoDiF</span>
+				</h2>
+				<p>
+					<h:outputText value="#{pbtext.mainPageAboutEcoDiF}" />
+				</p>
+			</div>
+
+			<div class="clear"></div>
+
+			<!-- Item Entry -->
+			<div class="item">
+				<h2>
+					<span class="arrow">
+						<h:outputText value="#{pbtext.mainPagePartnershipsTitle}" />
+					</span>
+				</h2>
+
+				<ul>
+					<li><h:outputText value="#{pbtext.mainPagePartnershipsRNP}" />		</li>
+				</ul>
+				<ul>
+					<li><h:outputText value="#{pbtext.mainPagePartnershipsUFRJ}" />	</li>
+					<li><h:outputText value="#{pbtext.mainPagePartnershipsiNCE}" />	</li>
+					<li><h:outputText value="#{pbtext.mainPagePartnershipsDCC}" />		</li>
+					<li><h:outputText value="#{pbtext.mainPagePartnershipsUbicomp}" />	</li>
+				</ul>
+				<ul>
+					<li><h:outputText value="#{pbtext.mainPagePartnershipsUFRN}" />	</li>
+					<li><h:outputText value="#{pbtext.mainPagePartnershipsDIMAp}" />	</li>
+					<li><h:outputText value="#{pbtext.mainPagePartnershipsConSiste}" /></li>
+				</ul>
+
+				<br />
+				<img src="#{request.contextPath}/images/Parcerias.png" alt="" />
+
+			</div>
+			<div class="clear"></div>
+			<!-- END OF Item Entry -->
+		</h:form>
+	</ui:define>
+</ui:composition>

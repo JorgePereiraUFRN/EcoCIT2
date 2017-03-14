@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	<display-name>EcoDiF</display-name>
+	<welcome-file-list>
+		<welcome-file>pages/public/index.xhtml</welcome-file>
+	</welcome-file-list>
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>/faces/*</url-pattern>
+		<url-pattern>*.jsf</url-pattern>
+		<url-pattern>*.xhtml</url-pattern>
+	</servlet-mapping>
+	<error-page>
+		<error-code>400</error-code>
+		<location>/pages/public/defaulterrorpage.xhtml</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/pages/public/defaulterrorpage.xhtml</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/pages/public/defaulterrorpage.xhtml</location>
+	</error-page>
+	<filter>
+		<filter-name>PrimeFaces FileUpload Filter</filter-name>
+		<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>PrimeFaces FileUpload Filter</filter-name>
+		<servlet-name>Faces Servlet</servlet-name>
+	</filter-mapping>
+	<context-param>
+		<param-name>DriversDirectory</param-name>
+		<param-value>/home/consiste/jorge/Drivers/</param-value>
+	</context-param>
+	<context-param>
+		<param-name>Wrnp_Schedule</param-name>
+		<param-value>/home/Ecodif_Files/WRNP_Ecodif/wrnp_schedule.xml</param-value>
+	</context-param>
+	<context-param>
+		<param-name>ApplicationsDirectory</param-name>
+		<param-value>/home/consiste/jorge/Applications/</param-value>
+	</context-param>
+	<context-param>
+		<param-name>EMMLDefaultFile</param-name>
+		<param-value>/home/consiste/jorge/Applications/default.emml</param-value>
+	</context-param>
+	<context-param>
+		<param-name>EMMLSchema</param-name>
+		<param-value>/home/consiste/workspaces/servers/wildfly-8.2.0.Final/standalone/deployments/emml.war/WEB-INF/schemas/EMMLSpec.xsd</param-value>
+	</context-param>
+	<context-param>
+		<param-name>EMMLEnginePath</param-name>
+		<param-value>/home/consiste/workspaces/servers/wildfly-8.2.0.Final/standalone/deployments/emml.war/WEB-INF/classes/</param-value>
+	</context-param>
+	<context-param>
+		<param-name>EMMLEngineURL</param-name>
+		<param-value>http://localhost:8080/emml/</param-value>
+	</context-param>
+	<context-param>
+		<param-name>AddressPortal</param-name>
+		<param-value>http://www.ecodif.com.br</param-value>
+	</context-param>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Restricted Area - FABRICANTE_DISPOSITIVO Only</web-resource-name>
+			<url-pattern>/pages/protected/fabdisp/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>FAB_DISP</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Restricted Area - PROVEDOR_DADOS Only</web-resource-name>
+			<url-pattern>/pages/protected/provdados/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>PROV_DADOS</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Restricted Area - DESENVOLVEDOR_APLICACOES Only</web-resource-name>
+			<url-pattern>/pages/protected/devapp/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>DEV_APP</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<form-login-config>
+			<form-login-page>/pages/public/testlogin.xhtml</form-login-page>
+			<form-error-page>/pages/public/loginerror.xhtml</form-error-page>
+		</form-login-config>
+	</login-config>
+	<security-role>
+		<role-name>FAB_DISP</role-name>
+	</security-role>
+	<security-role>
+		<role-name>PROV_DADOS</role-name>
+	</security-role>
+	<security-role>
+		<role-name>DEV_APP</role-name>
+	</security-role>
+	<security-role>
+		<role-name>PROV_DADOS_WRNP</role-name>
+	</security-role>
+	<context-param>
+		<param-name>primefaces.THEME</param-name>
+		<param-value>bootstrap</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+ 
+	<filter>
+		<filter-name>AuthFilter</filter-name>
+		<filter-class>br.com.ecodif.security.Filter</filter-class>
+	</filter> 
+	
+	<filter-mapping>
+		<filter-name>AuthFilter</filter-name>
+		<url-pattern>/api/sensor/*</url-pattern>
+		<url-pattern>/api/feed/*</url-pattern>
+		<url-pattern>/api/feeds/*</url-pattern>
+		<url-pattern>/api/application/*</url-pattern>
+		<url-pattern>/api/qodisco/*</url-pattern>
+		<url-pattern>/api/unit/*</url-pattern>
+		<url-pattern>/api/conndevice/*</url-pattern>
+		<url-pattern>/api/platform/*</url-pattern>
+		<url-pattern>/api/device/*</url-pattern>
+	</filter-mapping> 
+
+</web-app>

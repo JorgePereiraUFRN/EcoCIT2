@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>EcoDiF - <ui:insert name="title">Template</ui:insert></title>
+
+	<ui:insert name="headoptions" />
+
+	<!-- layout style -->
+	<link href="#{request.contextPath}/css/reset.css" rel="stylesheet"
+		type="text/css" media="screen" />
+	<link href="#{request.contextPath}/css/typography.css" rel="stylesheet"
+		type="text/css" media="screen" />
+	<link href="#{request.contextPath}/css/style.css" rel="stylesheet"
+		type="text/css" media="screen" />
+	<link href="#{request.contextPath}/css/slider.css" rel="stylesheet"
+		type="text/css" media="screen" />
+
+	<!-- jquery -->
+	<h:outputScript name="jquery/jquery.js" library="primefaces" />
+
+
+	<!-- superfish -->
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/css/superfish.css" media="screen" />
+	<script type="text/javascript"
+		src="#{request.contextPath}/scripts/hoverIntent.js"></script>
+	<script type="text/javascript"
+		src="#{request.contextPath}/scripts/superfish.js"></script>
+
+	<!-- slider -->
+	<script type="text/javascript"
+		src="#{request.contextPath}/scripts/easySlider1.5.js"></script>
+
+	<!-- initialize jquery plugins -->
+	<script type="text/javascript"
+		src="#{request.contextPath}/scripts/init.js"></script>
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{request.contextPath}/images/favicon.ico" />
+</h:head>
+
+<h:body>
+	<div id="wrapper">
+		<div id="top">
+			<div id="top-items">
+				<!-- BEGIN LOGO -->
+				<div id="logo">
+					<img src="#{request.contextPath}/images/Logo.png" alt="" />
+				</div>
+				<!-- END OF LOGO -->
+
+				<div id="top-right">
+					<div id="loginTop">
+						<!-- Usuário anônimo -->
+						<h:form rendered="#{userMB.anonymousUser}" id="formLogin">
+							<p:message id="messagelogin" for="formLogin" />
+							<h:commandLink action="reguser" 
+								value="#{pbtext.mainPageRegistration}" />
+							<table>
+								<tr>
+									<td><h:inputText value="#{userMB.user.login}"
+											id="strlogin" /></td>
+									<td><h:inputSecret type="password"
+											value="#{userMB.user.password}" /></td>
+									<td><h:commandButton value="Login"
+											action="#{userMB.logIn()}" /></td>
+								</tr>
+							</table>
+						</h:form>
+
+						<!-- Usuário Logado -->
+						<h:form rendered="#{!userMB.anonymousUser}">
+							<h:outputText value="#{pbtext.mainPageUser}: " />
+							<strong><h:outputText value="#{userMB.userName}" /></strong>
+							<h:outputText value=" | " />
+							<h:commandLink action="#{userMB.logOut()}" 
+								value="#{pbtext.mainPageLogout}" />
+						</h:form>
+					</div>
+				</div>
+			</div>
+
+			<div id="navmenu-container">
+				<div id="nav-menu">
+					<!-- BEGIN TAB NAVIGATION -->
+					<ul class="sf-menu">
+						<h:form>
+							<li class="first"><h:commandLink action="home" 
+									value="#{pbtext.menuHome}" /></li>
+							<li><h:commandLink action="listdevicepublic"
+									value="#{pbtext.menuDevices}" /></li>
+							<li><h:commandLink action="search" 
+									value="#{pbtext.menuFeeds}" /></li>
+							<li><h:commandLink action="listapplications"
+									value="#{pbtext.menuApplications}" /></li>
+							<li><h:commandLink action="docs" 
+									value="#{pbtext.menuDocumentation}" /></li>
+
+							<li><h:commandLink action="#" value="Console"
+									rendered="#{!userMB.anonymousUser}" />
+								<ul>
+									<!-- Usuário Fabricante_Dispositivo -->
+									<li><h:commandLink action="#"
+											value="#{pbtext.consoleMenuDeviceManufacturerRegisterDevice}"
+											rendered="#{userMB.fabricanteDispositivo}" />
+										<ul>
+											<li><h:commandLink action="#{deviceMB.linkNewDevice()}"
+													value="#{pbtext.consoleMenuDeviceManufacturerInclude}" 
+													rendered="#{userMB.fabricanteDispositivo}" /></li>
+											<li><h:commandLink action="listdevice" 
+													value="#{pbtext.consoleMenuDeviceManufacturerQuery}"
+													rendered="#{userMB.fabricanteDispositivo}" /></li>
+										</ul></li>
+
+									<!-- Usuário Provedor de Dados -->
+									<li><h:commandLink action="#" 
+											value="#{pbtext.consoleMenuDataProviderDevice}"
+											rendered="#{userMB.provedorDados}" />
+										<ul>
+											<li><h:commandLink action="connectdevice"
+													value="#{pbtext.consoleMenuDataProviderConnect}" 
+													rendered="#{userMB.provedorDados}" /></li>
+											<li><h:commandLink action="listconectdevice"
+													value="#{pbtext.consoleMenuDataProviderQueryConnected}"
+													rendered="#{userMB.provedorDados}" /></li>
+										</ul></li>
+									<li><h:commandLink action="#" 
+											value="#{pbtext.consoleMenuDataProviderFeeds}"
+											rendered="#{userMB.provedorDados}" />
+										<ul>
+											<li><h:commandLink action="#{eemlMB.linkNewFeed()}"
+													value="#{pbtext.consoleMenuDataProviderRegister}" /></li>
+											<li><h:commandLink action="listfeed" 
+													value="#{pbtext.consoleMenuDataProviderQuery}" /></li>
+										</ul></li>
+									<li><h:commandLink action="regusergroup"
+											value="#{pbtext.consoleMenuDataProviderUserGroups}" 
+											rendered="#{userMB.provedorDados}"/></li>
+
+
+									<!-- Usuário Desenvolvedor_Aplicacao -->
+									<li>
+										<h:commandLink action="#" 
+											value="#{pbtext.consoleMenuApplicationDeveloperApplications}"
+											rendered="#{userMB.desenvolvedorAplicacoes}" />
+										<ul>
+											<li>
+												<h:commandLink action="cadapplication" 
+													value="#{pbtext.consoleMenuApplicationDeveloperCreate}" />
+											</li>
+											<li>
+												<h:commandLink action="listapplicationsuser"
+													value="#{pbtext.consoleMenuApplicationDeveloperQuery}" />
+											</li>
+										</ul>
+									</li>
+								</ul></li>
+						</h:form>
+					</ul>
+
+					<!-- END OF  TAB NAVIGATION -->
+				</div>
+			</div>
+		</div>
+
+		<div id="middle">
+			<div id="content-bg">
+				<div id="content">
+					<div id="main">
+						<ui:insert name="body">Corpo</ui:insert>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footer">
+			<div id="footer-content">
+				<div class="float-left">
+					<p>
+						Copyright &copy; 2013 GT-EcoDiF | 
+						<h:outputText value="#{pbtext.footnoteCopyright}" />.<br />
+					</p>
+				</div>
+				<div class="float-right">
+					<p><h:outputText value="#{pbtext.footnoteVersion}" /> 1.0.0</p>
+				</div>
+			</div>
+			<div id="footer-bottom"></div>
+		</div>
+	</div>
+</h:body>
+</html>

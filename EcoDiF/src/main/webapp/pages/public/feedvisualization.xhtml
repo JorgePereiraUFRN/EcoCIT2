@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="headoptions">
+		<script src="http://maps.google.com/maps/api/js?sensor=false"
+			type="text/javascript" />
+	</ui:define>
+
+	<ui:define name="title">
+		<h:outputText value="#{pbtext.viewFeedTitlePage}" />
+	</ui:define>
+
+	<ui:define name="body">
+
+		<div class="item">
+			<h:form>
+				<p:growl id="messagesform" showDetail="true" sticky="true" />
+				<h2>
+					Feed <span class="arrow"><h:outputText
+							value="#{eemlMB.environment.title}" /></span>
+				</h2>
+
+				<table style="width: 740px">
+					<tr>
+						<td><h:outputText value="#{pbtext.viewFeedDetailsCreator}" /></td>
+						<td><h:outputText value="#{eemlMB.environment.creator}" /></td>
+						<td />
+					</tr>
+					<tr>
+						<td><h:outputText value="#{pbtext.viewFeedDetailsDevice}" /></td>
+						<td><h:outputText
+								value="#{eemlMB.deviceOfEnvironment.name} (#{eemlMB.deviceOfEnvironment.description})" /></td>
+						<td />
+					</tr>
+					<tr>
+						<td><h:outputText value="#{pbtext.viewFeedDetailsDatastream}" /></td>
+						<td><h:outputText
+								value="#{eemlMB.sensorOfDatastream.name} (#{eemlMB.sensorOfDatastream.description})" /></td>
+						<td />
+					</tr>
+					<tr>
+						<td><h:outputText value="#{pbtext.viewFeedDetailsUnit}" /></td>
+						<td><h:outputText
+								value="#{eemlMB.environment.data.get(0).unit.symbol}" /></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><h:outputText value="#{pbtext.viewFeedDetailsStatus}" /></td>
+						<td><h:outputText value="#{eemlMB.environment.status}" /></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><h:outputText value="#{pbtext.viewFeedDetailsCurrentValue}" /></td>
+						<td><h:outputText value="#{eemlMB.dataActualValue}" /></td>
+						<td><p:commandButton type="button" icon="ui-icon-image"
+								value="#{pbtext.viewFeedDetailsChart}" onclick="dlgGraph.show()" /></td>
+					</tr>
+					<tr>
+						<td><h:outputText value="#{pbtext.viewFeedDetailsLocation}" />:</td>
+						<td><h:outputText value="#{eemlMB.environment.location.name}" /></td>
+						<td><p:commandButton type="button" icon="ui-icon-pin-s"
+								value="#{pbtext.viewFeedDetailsLocation}" onclick="dlg.show()" /></td>
+					</tr>
+				</table>
+
+				<br />
+			</h:form>
+		</div>
+
+		<p:dialog widgetVar="dlg" width="625" height="400" modal="true"
+			header="#{eemlMB.environment.location.name}">
+			<p:gmap
+				center="#{eemlMB.environment.location.lat}, #{eemlMB.environment.location.lon}"
+				zoom="13" type="ROADMAP" style="width:600px;height:400px"
+				model="#{map_FeedVisualizationMB.simpleModel}" />
+		</p:dialog>
+		<p:dialog widgetVar="dlgGraph" width="800" height="400" modal="true" resizable="false"
+			header="#{pbtext.viewFeedChartDialog}">
+			<p:lineChart id="chart"
+				value="#{chart_FeedVisualizatiomMB.categoryModel}"
+				minY="#{chart_FeedVisualizatiomMB.minValue - 10}"
+				maxY="#{chart_FeedVisualizatiomMB.maxValue + 10}"
+				style="height:350px; width:785px " showDatatip="true"
+				rendered="#{!chart_FeedVisualizatiomMB.listEmpty}" />
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+
