@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -77,7 +78,7 @@ public class EnvironmentResource extends OwnerHelper {
 	 */
 	@Inject
 	private Converter converterDate = new Converter();
-	
+
 	/**
 	 * Referência para a classe de critérios de busca de um feed.
 	 * 
@@ -101,17 +102,14 @@ public class EnvironmentResource extends OwnerHelper {
 	 * @see br.com.ecodif.domain.Device
 	 */
 	@Inject
-	private DeviceService deviceService  = new DeviceService();
-	
+	private DeviceService deviceService = new DeviceService();
 
-	
-	
 	@Inject
 	private UnitService unitService = new UnitService();
-	
+
 	@Inject
 	private ValueDao2 valueDao = new ValueDao2();
-	
+
 	/**
 	 * Método para retornar o eeml de um feed com base no id.
 	 * 
@@ -128,24 +126,26 @@ public class EnvironmentResource extends OwnerHelper {
 	@PermitAll
 	@Path("/{feedid}/datastreams/{dataid}")
 	@Produces({ MediaType.APPLICATION_XML })
-	public Response getEemlFeedById(@PathParam("feedid") int feedid, @PathParam("dataid") String dataid, @Context HttpServletRequest request) {
-		
-		super.httpRequest = request;
-		
+	public Response getEemlFeedById(@PathParam("feedid") int feedid,
+			@PathParam("dataid") String dataid,
+			@HeaderParam("user") String user) {
+
+	
+
 		try {
 			Environment environment = environmentService
 					.findEnvironmentById(feedid);
 			if (environment == null)
 				return Response.status(404).build();
 			if (!environment.get_private().equals("N")) {
-				if (!isowner(environment)) {
+				if (!isowner(environment, user)) {
 					return Response.status(401).build();
 				}
 			}
 
 			Eeml eeml = environmentService.findEemlByIddbEnvironmentIdData(
 					Integer.valueOf(feedid), Integer.valueOf(dataid));
-			
+
 			if (eeml == null)
 				return Response.status(404).build();
 
@@ -178,7 +178,7 @@ public class EnvironmentResource extends OwnerHelper {
 			Eeml eemlReceived = environmentService
 					.eemlContractToDomain(contract_eeml);
 
-		//	Datapoints dataPoints = new Datapoints();
+			// Datapoints dataPoints = new Datapoints();
 			Value value = new Value();
 			value.setValue(eemlReceived.getEnvironment().get(0).getData()
 					.get(0).getCurrentValue().getValue());
@@ -193,22 +193,24 @@ public class EnvironmentResource extends OwnerHelper {
 			value.setAt(cal.getTime());
 			currValue.setAt(cal);
 
-			//dataPoints.getValue().add(value);
+			// dataPoints.getValue().add(value);
 
 			Data data = environmentService.findDataWithDatapoints(Integer
 					.valueOf(dataid));
 
-			//data.getValues().add(value);
+			// data.getValues().add(value);
 			data.setCurrentValue(currValue);
 
 			environmentService.updateData(data);
-			
-			value.setDataId(Integer
-					.valueOf(dataid));
-			
+
+			value.setDataId(Integer.valueOf(dataid));
+
 			valueDao.save(value);
-			
-//			repositoryService.insertObservation(repositoryServer, "sensor1", currValue.getValue(), "propriedade1", "2016-03-16T16:09:41.000-03:00", "criterio1", 100, "observationsensor1"+"2016-03-16T16:09:41.000-03:00");
+
+			// repositoryService.insertObservation(repositoryServer, "sensor1",
+			// currValue.getValue(), "propriedade1",
+			// "2016-03-16T16:09:41.000-03:00", "criterio1", 100,
+			// "observationsensor1"+"2016-03-16T16:09:41.000-03:00");
 			Trigger trigger = environmentService
 					.findTriggerByEnvironmentIddb(Integer
 							.parseInt(environmentid));
@@ -239,7 +241,8 @@ public class EnvironmentResource extends OwnerHelper {
 
 				if (triggerGo) {
 					String environmentName = environmentService
-							.findEnvironmentNameById(Integer.valueOf(environmentid));
+							.findEnvironmentNameById(Integer
+									.valueOf(environmentid));
 
 					SendMail sendmail = new SendMail();
 					sendmail.setSender("EcoDiF_API");
@@ -286,7 +289,7 @@ public class EnvironmentResource extends OwnerHelper {
 								+ dataid)).build();
 
 	}
-	
+
 	/**
 	 * Método para retornar datapoints de um feed com base em seu id
 	 * 
@@ -302,14 +305,14 @@ public class EnvironmentResource extends OwnerHelper {
 	@PermitAll
 	@Path("/{feedid}/datapoints")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getDataPointsFeedById(@PathParam("feedid") int feedid) {
+	public Response getDataPointsFeedById(@PathParam("feedid") int feedid, @HeaderParam("user") String user) {
 		try {
 			Environment environment = environmentService
 					.findEnvironmentById(feedid);
 			if (environment == null)
 				return Response.status(404).build();
 
-			if (isowner(environment)) {
+			if (isowner(environment, user)) {
 				Data data = environmentService
 						.findDataWithDatapoints(environment.getData().get(0)
 								.getIddb());
@@ -339,7 +342,7 @@ public class EnvironmentResource extends OwnerHelper {
 	@PermitAll
 	@Path("/{feedid}/device")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getDeviceByFeed(@PathParam("feedid") int feedid) {
+	public Response getDeviceByFeed(@PathParam("feedid") int feedid, @HeaderParam("user") String user) {
 
 		Environment environment = environmentService
 				.findEnvironmentById(feedid);
@@ -347,7 +350,7 @@ public class EnvironmentResource extends OwnerHelper {
 		if (environment == null)
 			return Response.status(404).build();
 
-		if (isowner(environment)) {
+		if (isowner(environment, user)) {
 			Device device = null;
 			try {
 				device = deviceService.findDeviceByEnvironmentId(feedid);
@@ -376,7 +379,7 @@ public class EnvironmentResource extends OwnerHelper {
 	@DELETE
 	@RolesAllowed("PROV_DADOS")
 	@Path("/{feedid}")
-	public Response deleteFeedById(@PathParam("feedid") int feedid) {
+	public Response deleteFeedById(@PathParam("feedid") int feedid, @HeaderParam("user") String user) {
 
 		Environment environment = environmentService
 				.findEnvironmentById(feedid);
@@ -384,7 +387,7 @@ public class EnvironmentResource extends OwnerHelper {
 		if (environment == null)
 			return Response.status(404).build();
 
-		if (isowner(environment)) {
+		if (isowner(environment, user)) {
 			try {
 				environmentService.deleteEnvironment(environment);
 				return Response.status(201).build();
@@ -408,9 +411,9 @@ public class EnvironmentResource extends OwnerHelper {
 	@POST
 	@RolesAllowed("PROV_DADOS")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response createFeed(Environment feed) {
+	public Response createFeed(Environment feed, @HeaderParam("user") String creator) {
 		try {
-			String creator = getUser();
+			
 			feed.setCreator(creator);
 			String _private = feed.get_private();
 			if (_private == null)
@@ -449,8 +452,6 @@ public class EnvironmentResource extends OwnerHelper {
 
 	}
 
-	
-
 	/**
 	 * Método responsável por buscar os feeds de um usuário.
 	 * 
@@ -463,8 +464,8 @@ public class EnvironmentResource extends OwnerHelper {
 	@Path("/user")
 	@Wrapped(element = "environments")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public List<Environment> getFeedsByUser() {
-		String user = this.getUser();
+	public List<Environment> getFeedsByUser(@HeaderParam("user") String user) {
+		
 		List<Environment> environments = environmentService
 				.findEnvironmentsByUserLogin(user);
 		return environments;
@@ -482,8 +483,8 @@ public class EnvironmentResource extends OwnerHelper {
 	@Wrapped(element = "environments")
 	@Produces({ MediaType.APPLICATION_XML })
 	@PermitAll
-	public List<Eeml_Contract> getEemlFeedsByUser() {
-		String user = this.getUser();
+	public List<Eeml_Contract> getEemlFeedsByUser(@HeaderParam("user") String user) {
+	
 		List<Eeml_Contract> environments;
 		try {
 			environments = environmentService.findEemlEnvByUser(user);
@@ -493,7 +494,7 @@ public class EnvironmentResource extends OwnerHelper {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Método responsável por editar um feed. Pode ser editado o titulo, o
 	 * dispositivo conectado a ele e seu status.
@@ -511,15 +512,16 @@ public class EnvironmentResource extends OwnerHelper {
 	@PUT
 	@RolesAllowed("PROV_DADOS")
 	@Path("/{feedid}/query")
-	public Response editFeed(@Context UriInfo info, @PathParam("feedid") int feedid) {
-		
+	public Response editFeed(@Context UriInfo info,
+			@PathParam("feedid") int feedid, @HeaderParam("user") String user) {
+
 		Environment environment = environmentService
 				.findEnvironmentById(feedid);
 
 		if (environment == null)
 			return Response.status(404).build();
 
-		if (isowner(environment)) {
+		if (isowner(environment, user)) {
 			String title = info.getQueryParameters().getFirst("title");
 			String connectedDevice = info.getQueryParameters().getFirst(
 					"connectedDevice");
@@ -539,8 +541,6 @@ public class EnvironmentResource extends OwnerHelper {
 		}
 		return Response.status(401).build();
 	}
-	
-	
 
 	/**
 	 * Método responsável por buscar os feeds de acordo com critérios passados.
@@ -616,8 +616,8 @@ public class EnvironmentResource extends OwnerHelper {
 	@GET
 	@Path("/{feedid}")
 	@PermitAll
-	@Produces({MediaType.APPLICATION_JSON })
-	public Response getFeedById(@PathParam("feedid") int feedid) {
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getFeedById(@PathParam("feedid") int feedid, @HeaderParam("user") String user) {
 
 		Environment environment = environmentService
 				.findEnvironmentById(feedid);
@@ -626,7 +626,7 @@ public class EnvironmentResource extends OwnerHelper {
 			return Response.status(404).build();
 
 		if (!environment.get_private().equals("N")) {
-			if (!isowner(environment)) {
+			if (!isowner(environment, user)) {
 				return Response.status(401).build();
 			}
 		}

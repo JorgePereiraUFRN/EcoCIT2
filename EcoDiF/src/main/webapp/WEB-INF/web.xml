@@ -139,7 +139,7 @@
 	<filter-mapping>
 		<filter-name>AuthFilter</filter-name>
 		<url-pattern>/api/sensor/*</url-pattern>
-		<url-pattern>/api/feed/*</url-pattern>
+		<!-- >url-pattern>/api/feed/*</url-pattern-->
 		<url-pattern>/api/feeds/*</url-pattern>
 		<url-pattern>/api/application/*</url-pattern>
 		<url-pattern>/api/qodisco/*</url-pattern>

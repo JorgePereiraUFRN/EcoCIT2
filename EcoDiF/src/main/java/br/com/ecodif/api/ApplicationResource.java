@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -186,12 +187,12 @@ public class ApplicationResource extends ApplicationHelper {
 	@PermitAll
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Wrapped(element = "applications")
-	public Response getApplicationsByUser() {
+	public Response getApplicationsByUser(@HeaderParam("user") String user) {
 
 		List<Application> applications = null;
 
 		try {
-			String username = this.getUser();
+			String username = user;
 			applications = applicationService.findApplicationsByUser(username);
 
 			if (applications.isEmpty())
@@ -226,14 +227,14 @@ public class ApplicationResource extends ApplicationHelper {
 	@Path("{applicationid}/feed/{feedid}")
 	@RolesAllowed("DEV_APP")
 	public Response includeFeed(@PathParam("feedid") int feedid,
-			@PathParam("applicationid") int applicationid) {
+			@PathParam("applicationid") int applicationid, @HeaderParam("user") String user) {
 
 		Application app = applicationService.findById(applicationid);
 
 		if (app == null)
 			return Response.status(404).build();
 
-		if (isowner(app)) {
+		if (isowner(app, user)) {
 			try {
 				Environment feed = environmentService
 						.findEnvironmentById(feedid);
@@ -272,14 +273,14 @@ public class ApplicationResource extends ApplicationHelper {
 	@Path("/{applicationid}/feed/{feedid}")
 	public Response unbindAppFeedById(
 			@PathParam("applicationid") int applicationid,
-			@PathParam("feedid") String feedid) {
+			@PathParam("feedid") String feedid, @HeaderParam("user") String user) {
 
 		Application app = applicationService.findById(applicationid);
 
 		if (app == null)
 			return Response.status(404).build();
 		else {
-			if (isowner(app)) {
+			if (isowner(app, user)) {
 				try {
 					if (unbindFeed(feedid, app))
 						return Response.ok().build();
@@ -307,7 +308,7 @@ public class ApplicationResource extends ApplicationHelper {
 	@PermitAll
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Wrapped(element = "applications")
-	public List<Application> getApplicationsByCriteria(@Context UriInfo info) {
+	public List<Application> getApplicationsByCriteria(@Context UriInfo info, @HeaderParam("user") String httpUser) {
 		String name = info.getQueryParameters().getFirst("name");
 		String tags = info.getQueryParameters().getFirst("tags");
 		String user = info.getQueryParameters().getFirst("user");
@@ -343,7 +344,7 @@ public class ApplicationResource extends ApplicationHelper {
 					.findApplicationsByCriteria(appcriteria).iterator();
 			while (it.hasNext()) {
 				if (it.next().get_private()) {
-					if (isowner(it.next()))
+					if (isowner(it.next(), httpUser))
 						apps.add(0, it.next());
 				}
 				apps.add(0, it.next());
@@ -374,13 +375,13 @@ public class ApplicationResource extends ApplicationHelper {
 	@Wrapped(element = "environments")
 	@Path("/{applicationid}/feeds")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getApplicationFeeds(@PathParam("applicationid") int id) {
+	public Response getApplicationFeeds(@PathParam("applicationid") int id, @HeaderParam("user") String user) {
 		Application app = applicationService.findById(id);
 		if (app == null)
 			return Response.status(404).build();
 
 		try {
-			if (!app.get_private() || isowner(app)) {
+			if (!app.get_private() || isowner(app, user)) {
 				Set<Environment> feeds = app.getFeeds();
 
 				if (feeds.isEmpty())
@@ -416,14 +417,14 @@ public class ApplicationResource extends ApplicationHelper {
 	 */
 	@DELETE
 	@Path("/{appid}")
-	public Response deleteApplication(@PathParam("appid") int appplicationid) {
+	public Response deleteApplication(@PathParam("appid") int appplicationid, @HeaderParam("user") String httpUser) {
 		try {
 			Application app = applicationService.findById(appplicationid);
 			if (app == null)
 				return Response.status(404).build();
 			else {
-				if (isowner(app)) {
-					User user = userService.findUserByLogin(getUser());
+				if (isowner(app, httpUser)) {
+					User user = userService.findUserByLogin(httpUser);
 					File fileRep = new File(app.getEmmlReference());
 					fileRep.delete();
 					String fileNameEng = context
@@ -463,10 +464,10 @@ public class ApplicationResource extends ApplicationHelper {
 	@Path("/{appid}")
 	@RolesAllowed("DEV_APP")
 	public Response updateApplication(
-			@PathParam("appid") Integer appplicationid, Application app_update) {
+			@PathParam("appid") Integer appplicationid, Application app_update, @HeaderParam("user") String user) {
 		Application app = applicationService.findById(appplicationid);
 
-		if (!(app_update != null && isowner(app))) {
+		if (!(app_update != null && isowner(app, user))) {
 			return Response.status(404).build();
 		} else {
 
@@ -512,7 +513,7 @@ public class ApplicationResource extends ApplicationHelper {
 	@Path("/{appid}/emml")
 	@Consumes("multipart/form-data")
 	public Response updateApplicationEMML(MultipartFormDataInput input,
-			@PathParam("appid") int appplicationid) {
+			@PathParam("appid") int appplicationid, @HeaderParam("user") String user) {
 
 		Application app = applicationService.findById(appplicationid);
 		if (app == null)
@@ -539,7 +540,7 @@ public class ApplicationResource extends ApplicationHelper {
 
 			String fileNameRep = context
 					.getInitParameter("ApplicationsDirectory")
-					+ getUser()
+					+ user
 					+ "_" + app.getName() + ".emml";
 			
 			app.setEmmlReference(fileNameRep);
@@ -553,7 +554,7 @@ public class ApplicationResource extends ApplicationHelper {
 
 			
 			String fileNameEng = context.getInitParameter("EMMLEnginePath")
-					+ File.separator + getUser() + "_" + app.getName()
+					+ File.separator + user + "_" + app.getName()
 					+ ".emml";
 
 			fileHelper.copyFile(inputStream, fileNameEng);
@@ -598,16 +599,16 @@ public class ApplicationResource extends ApplicationHelper {
 	@POST
 	@RolesAllowed("DEV_APP")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response registerapplication(Application app) {
+	public Response registerapplication(Application app, @HeaderParam("user") String _user) {
 
 		if (app.getName().isEmpty() || applicationService.existAppName(app))
 			return Response.status(400).build();
 		try {
-			User user = userService.findUserByLogin(getUser());
+			User user = userService.findUserByLogin(_user);
 			app.setUser(user);
 			String fileNameRep = context
 					.getInitParameter("ApplicationsDirectory")
-					+ getUser()
+					+ _user
 					+ "_" + app.getName() + ".emml";
 			app.setEmmlReference(fileNameRep);
 
@@ -641,7 +642,7 @@ public class ApplicationResource extends ApplicationHelper {
 	@Path("/{appid}/emml")
 	@Produces({ MediaType.APPLICATION_XML })
 	@PermitAll
-	public Response getEMML(@PathParam("appid") int appid) {
+	public Response getEMML(@PathParam("appid") int appid, @HeaderParam("user") String user) {
 
 		String contents = "";
 		Application application = applicationService.findById(appid);
@@ -650,7 +651,7 @@ public class ApplicationResource extends ApplicationHelper {
 			return Response.status(404).build();
 
 		try {
-			if (isowner(application)) {
+			if (isowner(application, user)) {
 				BufferedReader in = new BufferedReader(new FileReader(
 						application.getEmmlReference()));
 				while (in.ready()) {
@@ -684,13 +685,13 @@ public class ApplicationResource extends ApplicationHelper {
 	@Path("/{appid}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@PermitAll
-	public Response getApplicationById(@PathParam("appid") int appid) {
+	public Response getApplicationById(@PathParam("appid") int appid, @HeaderParam("user") String user) {
 		Application application = null;
 		try {
 			application = applicationService.findById(appid);
 			if (application == null)
 				return Response.status(404).build();
-			if (isowner(application) || !application.get_private())
+			if (isowner(application, user) || !application.get_private())
 				return Response.ok(application).build();
 
 		} catch (Exception e) {

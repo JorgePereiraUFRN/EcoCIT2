@@ -6,6 +6,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -56,10 +57,10 @@ public class ConnectedDeviceResource extends OwnerHelper {
 	@PermitAll
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Wrapped(element = "connectedDevices")
-	public Response getAllDevicesConnectedByUser() {
+	public Response getAllDevicesConnectedByUser(@HeaderParam("user") String user) {
 		List<ConnectedDevice> devices = null;
 		try {
-			String username = this.getUser();
+			String username = user;
 			devices = deviceService.findConnectedDevicesByUser(username);
 			if(devices == null)
 				return Response.status(404).build();
@@ -89,7 +90,7 @@ public class ConnectedDeviceResource extends OwnerHelper {
 	@PUT
 	@Path("/disconnect/{deviceid}")
 	@RolesAllowed("PROV_DADOS")
-	public Response disconnectDevice(@PathParam("deviceid") int deviceid) {
+	public Response disconnectDevice(@PathParam("deviceid") int deviceid, @HeaderParam("user") String user) {
 
 		ConnectedDevice cnndevice = deviceService
 				.findConnectedDeviceById(deviceid);
@@ -97,7 +98,7 @@ public class ConnectedDeviceResource extends OwnerHelper {
 			return Response.status(404).build();
 
 		try {
-			if (isowner(cnndevice)) {
+			if (isowner(cnndevice, user)) {
 				if (deviceService.connectedDeviceHasEnvironment(deviceid)) {
 					return Response
 							.notModified()

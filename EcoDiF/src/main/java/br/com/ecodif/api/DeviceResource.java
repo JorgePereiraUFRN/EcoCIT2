@@ -14,6 +14,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -128,9 +129,9 @@ public class DeviceResource extends OwnerHelper {
 	@POST
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@RolesAllowed("FAB_DISP")
-	public Response registerDevice(Device device) {
+	public Response registerDevice(Device device, @HeaderParam("user") String _user) {
 		try {
-			User user = userService.findUserByLogin(getUser());
+			User user = userService.findUserByLogin(_user);
 			device.setCompany(user);
 			deviceService.saveDevice(device);
 			Platform platformManaged = deviceService
@@ -160,10 +161,10 @@ public class DeviceResource extends OwnerHelper {
 	@Path("/user")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@PermitAll
-	public Response getAllDevicesByUser() {
+	public Response getAllDevicesByUser(@HeaderParam("user") String user) {
 		List<Device> devices = null;
 		try {
-			String username = this.getUser();
+			String username = user;
 			devices = deviceService.findDevicesByUser(username);
 			if (devices.isEmpty())
 				return Response.status(404).build();
@@ -194,12 +195,12 @@ public class DeviceResource extends OwnerHelper {
 	@DELETE
 	@Path("/{deviceid : \\d+}")
 	@RolesAllowed("FAB_DISP")
-	public Response deleteDevice(@PathParam("deviceid") int deviceid) {
+	public Response deleteDevice(@PathParam("deviceid") int deviceid, @HeaderParam("user") String user) {
 		try {
 			Device device = deviceService.findDevice(deviceid);
 			if (device == null)
 				return Response.status(404).build();
-			if (isowner(device)) {
+			if (isowner(device, user)) {
 				deviceService.deleteDevice(device);
 				return Response.ok().build();
 			}
@@ -248,7 +249,7 @@ public class DeviceResource extends OwnerHelper {
 	@Path("/connect/{deviceid : \\d+}")
 	@RolesAllowed("PROV_DADOS")
 	public Response connectDevice(@PathParam("deviceid") int deviceid,
-			ConnectedDevice connectedDevice) {
+			ConnectedDevice connectedDevice, @HeaderParam("user") String user) {
 
 		try {
 			Device device = deviceService.findDevice(deviceid);
@@ -256,7 +257,7 @@ public class DeviceResource extends OwnerHelper {
 			if (device == null)
 				return Response.status(404).build();
 
-			connectedDevice.setUser(userService.findUserByLogin(getUser()));
+			connectedDevice.setUser(userService.findUserByLogin(user));
 			connectedDevice.setDevice(device);
 
 			deviceService.saveCnnDevice(connectedDevice);
@@ -284,11 +285,11 @@ public class DeviceResource extends OwnerHelper {
 	@RolesAllowed("FAB_DISP")
 	@Consumes("multipart/form-data")
 	public Response uploadDriver(MultipartFormDataInput driverFile,
-			@PathParam("deviceid") int deviceid) {
+			@PathParam("deviceid") int deviceid, @HeaderParam("user") String user) {
 
 		try {
 			Device device = deviceService.findDevice(deviceid);
-			String username = this.getUser();
+			String username = user;
 
 			if (device == null || driverFile == null)
 				return Response.status(404).build();

@@ -21,8 +21,8 @@ import br.com.ecodif.domain.Environment;
 @RequestScoped
 public class OwnerHelper {
 
-	@Context
-	protected HttpServletRequest httpRequest;
+	/*@Context
+	protected HttpServletRequest httpRequest;*/
 
 	/**
 	 * Dono do recurso acessado.
@@ -39,12 +39,14 @@ public class OwnerHelper {
 	 * 
 	 * @return o usuário.
 	 */
-	public String getUser() {
+	/*public String getUser() {
 
-		
 		String user = (String) httpRequest.getAttribute("user");
+		
+		System.out.println("user: "+user);
+		
 		return user;
-	}
+	}*/
 
 	public OwnerHelper() {
 	}
@@ -91,9 +93,9 @@ public class OwnerHelper {
 	 * @param obj - recurso a ser verificado.
 	 * @return
 	 */
-	protected boolean isowner(Object obj) {
+	protected boolean isowner(Object obj, String user) {
 		this.getOwner(obj);
-		if (owner.compareTo(getUser()) == 0) {
+		if (owner.compareTo(user) == 0) {
 			return true;
 		}
 		return false;
