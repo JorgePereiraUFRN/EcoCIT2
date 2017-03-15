@@ -131,6 +131,11 @@
 		<filter-class>br.com.ecodif.security.Filter</filter-class>
 	</filter> 
 	
+	<context-param>
+		<param-name>resteasy.providers</param-name>
+		<param-value>br.com.ecodif.security.SecurityInterceptor</param-value>
+	</context-param>
+	
 	<filter-mapping>
 		<filter-name>AuthFilter</filter-name>
 		<url-pattern>/api/sensor/*</url-pattern>

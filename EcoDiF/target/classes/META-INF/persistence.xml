@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="persistenceUnit"
+		transaction-type="RESOURCE_LOCAL">
+
+		<provider>com.impetus.kundera.KunderaPersistence</provider>
+		
+		<class>br.com.ecodif.domain.Value</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+		<properties>
+			<property name="jboss.as.jpa.managed" value="false" />
+			<property name="kundera.nodes" value="localhost" />
+			<property name="kundera.port" value="9160" />
+			<property name="kundera.keyspace" value="valuesdb" />
+			<property name="kundera.dialect" value="cassandra" />
+			<property name="replcation.factor" value="1" />
+			<!-- <property name="kundera.ddl.auto.prepare" value="create" /> -->
+			<property name="kundera.show.query" value="false" />
+			<property name="kundera.client.lookup.class"
+				value="com.impetus.client.cassandra.thrift.ThriftClientFactory" />
+
+		</properties>
+
+	</persistence-unit>
+</persistence>

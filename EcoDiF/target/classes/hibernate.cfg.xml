@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+  "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+	
+	<property name="dialect">com.nuodb.hibernate.NuoDBDialect</property>
+        <property name="connection.driver_class">com.nuodb.hibernate.NuoHibernateDriver</property>
+        <property name="connection.url">jdbc:com.nuodb.hib://localhost/ecodifdb2</property>
+        <property name="hibernate.connection.username">ecodif</property>
+		<property name="hibernate.connection.password">ecodif</property>
+        <property name="hibernate.connection.schema">ECODIF</property>
+        <!-- Use the Hibernate built-in pool for tests. -->
+        <property name="connection.pool_size">3</property>
+    <!-- NuoDB currently doesn't support this but this is required to be false for Hibernate version 4.x -->
+    <property name="hibernate.temp.use_jdbc_metadata_defaults">false</property>
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+        <property name="cache.use_query_cache">false</property>
+        <property name="cache.use_minimal_puts">false</property>
+        <!-- In eager fetching, only join three tables deep if joins are used -->
+        <property name="max_fetch_depth">3</property>
+        <!-- Print SQL to stdout, format it nicely  -->
+        <property name="show_sql">false</property>
+        <property name="format_sql">true</property>
+        <property name="use_sql_comments">true</property>
+        <!-- Drop and then re-create schema on SessionFactory build, for testing  -->
+<!--         <property name="hbm2ddl.auto">update</property> -->
+        <!-- Use thread-bound persistence context propagation, scoped to the transaction -->
+        <property name="current_session_context_class">thread</property>
+        <!-- CaveatEmptor mapping files -->
+        <mapping class="br.com.ecodif.domain.Application"/>
+		<mapping class="br.com.ecodif.domain.ConnectedDevice" />
+		<mapping class="br.com.ecodif.domain.Data" />
+		<mapping class="br.com.ecodif.domain.Device" />
+		<mapping class="br.com.ecodif.domain.Driver" />
+		<mapping class="br.com.ecodif.domain.Eeml" />
+		<mapping class="br.com.ecodif.domain.Environment" />
+		<mapping class="br.com.ecodif.domain.Location" />
+		<mapping class="br.com.ecodif.domain.Platform" />
+		<mapping class="br.com.ecodif.domain.Sensor" />
+		<mapping class="br.com.ecodif.domain.Trigger" />
+		<mapping class="br.com.ecodif.domain.Unit" />
+		<mapping class="br.com.ecodif.domain.User" />
+		<mapping class="br.com.ecodif.domain.UserGroup" />
+		<mapping class="br.com.ecodif.domain.UserType" />
+		<mapping class="br.com.ecodif.domain.Value" />
+
+	</session-factory>
+</hibernate-configuration>

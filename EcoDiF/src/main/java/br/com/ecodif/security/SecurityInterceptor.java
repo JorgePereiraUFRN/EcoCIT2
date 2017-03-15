@@ -64,6 +64,7 @@ public class SecurityInterceptor implements PreProcessInterceptor, ContainerRequ
 			ResourceMethodInvoker methodInvoked) throws Failure,
 			WebApplicationException {
 		
+		
 		Method method = methodInvoked.getMethod();
 
 		
@@ -77,7 +78,6 @@ public class SecurityInterceptor implements PreProcessInterceptor, ContainerRequ
 
 		String user = (String) request.getAttribute("user");
 		
-		System.out.println(user);
 
 		if (user == null || user.isEmpty()) {
 			
@@ -129,30 +129,6 @@ public class SecurityInterceptor implements PreProcessInterceptor, ContainerRequ
 			throws IOException {
 		
 		
-		
-		ResourceMethodInvoker methodInvoker = (ResourceMethodInvoker) requestContext
-				.getProperty("org.jboss.resteasy.core.ResourceMethodInvoker");
-		Method method = methodInvoker.getMethod();
-
-		if (!method.isAnnotationPresent(PermitAll.class)) {
-
-			if (method.isAnnotationPresent(DenyAll.class)) {
-				requestContext.abortWith(ACCESS_FORBIDDEN);
-				return;
-			}
-			
-			final MultivaluedMap<String, String> headers = requestContext.getHeaders();
-	          
-	        for(String header: headers.keySet()){
-	     	   
-	     	   System.out.println(header+": "+headers.get(header));
-	        }
-		
-         
-			
-		}
-		
-		 //Get request headers
         
 	}
 
